@@ -18,6 +18,15 @@ def create_book():
     books.append(new_book)
     return jsonify({"message": "Livro adicionado com sucesso"})  #  retorna nosso feedback em formato JSON para mais facilidade de leitura para API
 
+# READ 
+@app.route('/books', methods=['GET'])
+def get_books():
+    books_list =[book.get_dict() for book in books]  # retorna todos os livros na lista books em forma de dicionario para lista de livros
+    output = {  #  O que sera mostrado ao usuario apos fazer a requisição
+        "books": books_list,
+        "total_books": len(books_list)
+    }  
+    return jsonify(output)
 
 if __name__ == "__main__":
     app.run(debug=True)
