@@ -28,12 +28,12 @@ def get_books():
     }  
     return jsonify(output)
 
-@app.route('/books/<int:id>', methods=['GET'])
+@app.route('/books/<int:id>', methods=['GET'])  # recebendo um id como parametro de rota convertendo para inteiro
 def get_book(id):
-    for book in books:
+    for book in books:  # verifica se o id do usuario corresponde com algum livro na biblioteca
         if book.id == id:
             return jsonify(book.get_dict())
-    return jsonify({"message": "Não foi possivel encontrar este livro!"}), 404  
+    return jsonify({"message": "Não foi possivel encontrar este livro!"}), 404  # retorna status de erro junto ao feedback
 
 
 if __name__ == "__main__":
