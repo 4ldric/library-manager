@@ -28,5 +28,13 @@ def get_books():
     }  
     return jsonify(output)
 
+@app.route('/books/<int:id>', methods=['GET'])
+def get_book(id):
+    for book in books:
+        if book.id == id:
+            return jsonify(book.get_dict())
+    return jsonify({"message": "Não foi possivel encontrar este livro!"}), 404  
+
+
 if __name__ == "__main__":
     app.run(debug=True)
