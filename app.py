@@ -18,7 +18,7 @@ def create_book():
     books.append(new_book)
     return jsonify({"message": "Livro adicionado com sucesso"})  #  retorna nosso feedback em formato JSON para mais facilidade de leitura para API
 
-# READ 
+# READ
 @app.route('/books', methods=['GET'])
 def get_books():
     books_list =[book.get_dict() for book in books]  # retorna todos os livros na lista books em forma de dicionario para lista de livros
@@ -34,6 +34,21 @@ def get_book(id):
         if book.id == id:
             return jsonify(book.get_dict())
     return jsonify({"message": "Não foi possivel encontrar este livro!"}), 404  # retorna status de erro junto ao feedback
+
+# UPDATE
+@app.route('/books/<int:id>', methods=['PUT'])
+def update_book(id):
+    bk = None
+    data = request.get_json()
+    for book in books:
+        if book.id == id:
+            bk = book
+    if bk is None:
+        return jsonify({"message": "Não foi possivel encontrar este livro!"}), 404 
+    bk.title = data['title']
+    bk.author = data.get('author', '')
+    bk.availabre = data['availabre']
+    return jsonify({"message": "Informações do livro atualizadas com sucesso!"})
 
 
 if __name__ == "__main__":
