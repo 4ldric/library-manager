@@ -43,6 +43,7 @@ def update_book(id):
     for book in books:
         if book.id == id:
             bk = book
+            break
     if bk is None:
         return jsonify({"message": "Não foi possivel encontrar este livro!"}), 404 
     bk.title = data['title']
@@ -50,6 +51,18 @@ def update_book(id):
     bk.availabre = data['availabre']
     return jsonify({"message": "Informações do livro atualizadas com sucesso!"})
 
+# DELETE
+@app.route('/books/<int:id>', methods=['DELETE'])
+def delete_book(id):
+    bk = None
+    for book in books:
+        if book.id == id:
+            bk = book
+            break
+    if bk is None:
+        return jsonify({"message": "Livro não encontrado!"}), 404
+    books.remove(bk)
+    return jsonify({"message": "Livro deletado com sucesso!"})
 
 if __name__ == "__main__":
     app.run(debug=True)
