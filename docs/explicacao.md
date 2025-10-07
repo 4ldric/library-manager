@@ -181,11 +181,115 @@ return jsonify({"message": "Livro deletado com sucesso!"})
 
 ---
 
-## 🏆 Melhorias Futuras
+## 🤖 Testes automatizados
+### 📌 Rota CREATE
 
-- [ ]  **Testes automatizados:** 
-- [ ]  **Autenticação de usuários:** 
-- [ ]  **Persistência em banco de dados:** 
+```python
+import pytest, requests
+
+BASE_URL = 'http://127.0.0.1:5000'  # 1
+books = []  # 2
+
+def test_book_create():
+	new_book_data = {  # 3
+		"title": "Iracema",
+		"author": "Jose de alencar"
+	} 
+	response = requests.post(f'{BASE_URL}/books', json=new_book_data)  # 4
+	assert response.status_code == 200  # 5
+	response_json = response.json()
+	assert "message" in response_json
+	assert "id" in response_json
+	books.append(response_json['id'])
+``` 
+
+📌 **Explicação:**
+
+- 1. Definimos nossa `BASE_URL` de teste
+- 2. Criamos uma lista para armazenar ids dos livros
+- 3. Criamos um pala de informações necessárias para adicionar um livro
+- 4. Estamos armazenando a requisição `POST` para nosso servidor e repassando os parâmetros necessários para a adição do livro
+- 5. Passando a validação do nosso teste de acordo com os requisitos
+
+---
+### 📌 Rota READ: todos os livres
+
+```python
+def test_get_books():
+	response = requests.get(f'{BASE_URL}/books')
+	assert response.status_code == 200
+	response_json = response.json()
+	assert "books" in response_json
+	assert "total_books" in response_json
+``` 
+
+📌 **Explicação:**
+
+---
+### 📌 Rota READ: livro especifico
+
+```python
+def test_get_book():
+	if books:  # 1
+		book_id = books[0] 
+		response = requests.get(f'{BASE_URL}/books/{book_id}')
+		assert response.status_code == 200
+		response_json = response.json()
+		assert book_id == response_json["id"]
+``` 
+
+📌 **Explicação:**
+
+- 1. Ira verificar se existe algum livro adicionado e ira realizar o teste
+
+---
+
+### 📌 Rota UPDATE
+
+```python
+def test_update_book():
+	if books:
+		book_id = books[0]
+		payload = {  
+			"title": "novo titulo",
+			"author": "novo autor",
+			"availabre": False
+		}
+		
+		response = requests.put(f'{BASE_URL}/books/{book_id}', json= payload)
+		assert response.status_code == 200
+		
+		response = requests.get(f'{BASE_URL}/books/{book_id}') # 1
+		assert response.status_code == 200
+		response_json = response.json()
+		assert response_json['title'] == payload['title']  
+		assert response_json['author'] == payload['author']
+		assert response_json['availabre'] == payload['availabre']
+	
+``` 
+
+📌 **Explicação:**
+
+- 1. Faz uma nova requisição para verificar se as informações foram atualizadas
+
+---
+### 📌 Rota DELETE
+
+```python
+def test_delete_book():
+	if books:
+		book_id = books[0]
+		response = requests.delete(f'{BASE_URL}/books{book_id}')
+		assert response.status_code == 200
+		
+		response = requests.get(f'{BASE_URL}/books/{book_id}')  # 1
+		assert response.status_code == 404
+``` 
+
+📌 **Explicação:**
+
+- 1. Realiza uma nova requisição e verifica se o livro foi excluído retornando o status Code 404
+
 
 ---
 
