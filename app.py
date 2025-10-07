@@ -16,7 +16,7 @@ def create_book():
     new_book = Book(id=book_id_control, title=data["title"], author=data.get("author", ""))  # criação do livro utilizando as informações retornadas e definindo o author como vazio caso o usuario não responda.
     book_id_control += 1
     books.append(new_book)
-    return jsonify({"message": "Livro adicionado com sucesso"})  #  retorna nosso feedback em formato JSON para mais facilidade de leitura para API
+    return jsonify({"message": "Livro adicionado com sucesso", "id": new_book.id})  #  retorna nosso feedback em formato JSON para mais facilidade de leitura para API
 
 # READ
 @app.route('/books', methods=['GET'])
